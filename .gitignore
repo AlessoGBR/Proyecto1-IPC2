@@ -1,4 +1,8 @@
 # Compiled class file
-*.class
 
 
+
+/mavenproject1/target/
+/proyecto1/target/
+/Proyecto1/target/
+/asdf/target/

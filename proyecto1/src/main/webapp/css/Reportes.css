@@ -1,0 +1,53 @@
+.header-bar {
+    background-color: #f0f0f0; /* Color de fondo gris claro */
+    padding: 10px 0; /* Espaciado vertical */
+    border-bottom: 1px solid #dee2e6; /* Línea inferior */
+}
+
+.header-bar .navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.row {
+    display: flex;
+    justify-content: center;
+}
+.container {
+    max-width: 1200px;
+}
+
+.header-bar .nav-link {
+    margin-left: 10px;
+}
+body {
+    background-color: #f8f9fa;
+}
+.container {
+    margin-top: 20px;
+}
+.reportes-sidebar {
+    background-color: white;
+    border-right: 1px solid #ddd;
+    padding: 20px;
+}
+.reporte-generado {
+    background-color: white;
+    padding: 20px;
+    border-left: 1px solid #ddd;
+}
+.btn-primary {
+    width: 100%;
+}
+.input-group-text {
+    background-color: #ffffff;
+}
+h5 {
+    font-weight: bold;
+}
+.form-group small {
+    display: block;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: #666;
+}

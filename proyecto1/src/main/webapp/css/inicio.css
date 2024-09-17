@@ -1,0 +1,25 @@
+header-bar {
+    background-color: #f8f9fa; 
+    padding: 20px 0; 
+}
+
+.navbar-nav {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-text {
+    margin-right: 40px; 
+}
+
+.img-profile {
+    width: 40px; 
+    height: 40px;
+    object-fit: cover;
+    border-radius: 40%; 
+    margin-right: 20px; 
+}
+
+.btn-primary {
+    margin-left: 20px; 
+}
