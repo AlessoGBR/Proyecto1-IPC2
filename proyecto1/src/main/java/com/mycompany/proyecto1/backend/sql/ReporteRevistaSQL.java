@@ -5,6 +5,8 @@
 package com.mycompany.proyecto1.backend.sql;
 
 import com.mycompany.proyecto1.backend.ComentarioRevista;
+import com.mycompany.proyecto1.backend.RevistaReacciones;
+import com.mycompany.proyecto1.backend.SuscriptorRevista;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -71,4 +73,81 @@ public class ReporteRevistaSQL {
 
         return comentariosRevistas;
     }
+
+    public List<SuscriptorRevista> obtenerSuscripcionesPorUsuario(String nombreUsuario) {
+        List<SuscriptorRevista> suscripcionesRevistas = new ArrayList<>();
+
+        String query = "SELECT s.idSuscripcion, s.fecha, s.nombre_usuario, r.idRevista, r.titulo "
+                + "FROM Suscripcion s "
+                + "JOIN Revista r ON s.idRevista = r.idRevista "
+                + "WHERE r.nombre_usuario = ?"; // Filtrar por el nombre de usuario
+
+        try (Connection conn = Conexion.connection; PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, nombreUsuario);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int idSuscripcion = rs.getInt("idSuscripcion");
+                    Date fechaSuscripcion = rs.getDate("fecha");
+                    String user = rs.getString("nombre_usuario");
+                    int idRevista = rs.getInt("idRevista");
+                    String tituloRevista = rs.getString("titulo");
+
+                    // Crea un objeto SuscripcionRevista para cada registro
+                    SuscriptorRevista suscripcionRevista = new SuscriptorRevista(
+                            idSuscripcion,
+                            fechaSuscripcion,
+                            idRevista,
+                            tituloRevista,
+                            user
+                    );
+
+                    suscripcionesRevistas.add(suscripcionRevista);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return suscripcionesRevistas;
+    }
+
+    public List<RevistaReacciones> obtenerTop5RevistasPorReacciones() {
+        List<RevistaReacciones> topRevistas = new ArrayList<>();
+
+        String query = "SELECT r.idRevista, r.titulo, COUNT(rr.idReaccion) AS cantidadReacciones "
+                + "FROM Reaccion_Revista rr "
+                + "JOIN Revista r ON rr.idRevista = r.idRevista "
+                + "GROUP BY r.idRevista, r.titulo "
+                + "ORDER BY cantidadReacciones DESC "
+                + "LIMIT 5";
+
+        try (Connection conn = Conexion.connection; PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int idRevista = rs.getInt("idRevista");
+                    String tituloRevista = rs.getString("titulo");
+                    int cantidadReacciones = rs.getInt("cantidadReacciones");
+
+                    // Crea un objeto RevistaReacciones para cada registro
+                    RevistaReacciones revistaReacciones = new RevistaReacciones(
+                            idRevista,
+                            tituloRevista,
+                            cantidadReacciones
+                    );
+
+                    topRevistas.add(revistaReacciones);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return topRevistas;
+    }
+
 }

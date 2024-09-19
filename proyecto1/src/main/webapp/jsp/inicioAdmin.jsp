@@ -28,13 +28,7 @@
                 <div class="collapse navbar-collapse">                   
                     <ul class="navbar-nav ml-auto d-flex align-items-center">
                         <li class="nav-item mr-2">
-                            <form action="" method="">
-                                <input type="hidden" name="username" value="${param.username}">
-                                <button class="btn btn-primary" type="submit">Comision</button>
-                            </form>
-                        </li>
-                        <li class="nav-item mr-2">
-                            <form action="" method="">
+                            <form action="${pageContext.servletContext.contextPath}/AnunciosAdmin" method="GET">
                                 <input type="hidden" name="username" value="${param.username}">
                                 <button class="btn btn-primary" type="submit">Anuncios</button>
                             </form>
@@ -59,8 +53,6 @@
             </nav>
         </div>
     </header>
-
-
     <body>
         <div class="container mt-5">
             <h1 class="text-center">Revistas Sin Procesar</h1>

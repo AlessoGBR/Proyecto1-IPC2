@@ -4,10 +4,8 @@
  */
 package com.mycompany.proyecto1.mvc.controller;
 
-import com.mycompany.proyecto1.backend.Revista;
+import com.mycompany.proyecto1.backend.sql.AnunciosSQL;
 import com.mycompany.proyecto1.backend.sql.Conexion;
-import com.mycompany.proyecto1.backend.sql.ObtenerRevistas;
-import com.mycompany.proyecto1.backend.sql.RevistasAdmin;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -15,15 +13,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.sql.SQLException;
-import java.util.List;
 
 /**
  *
  * @author alesso
  */
-@WebServlet(name = "Admin", urlPatterns = {"/Admin"})
-public class Admin extends HttpServlet {
+@WebServlet(name = "AprobarAnuncio", urlPatterns = {"/AprobarAnuncio"})
+public class AprobarAnuncio extends HttpServlet {
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -37,22 +33,7 @@ public class Admin extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Conexion conexion = new Conexion();
-        conexion.conectar();
 
-        try {
-            RevistasAdmin obtener = new RevistasAdmin(Conexion.connection);
-            List<Revista> revistas = obtener.obtenerRevistasSinAprobar();
-            request.setAttribute("revistas", revistas);
-            List<Revista> revistasDenegadas = obtener.obtenerRevistasDenegadas();
-            request.setAttribute("revistasDenegadas", revistasDenegadas);
-
-            request.getRequestDispatcher("jsp/inicioAdmin.jsp").forward(request, response);
-        } catch (SQLException e) {
-            throw new ServletException("Error al obtener revistas sin aprobar", e);
-        } finally {
-            Conexion.closeConnection();
-        }
     }
 
     /**
@@ -66,7 +47,32 @@ public class Admin extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        int idAnuncio = Integer.parseInt(request.getParameter("idAnuncio"));
+        String fechaInicio = request.getParameter("fechaInicio");
+        String fechaFinal = request.getParameter("fechaFinal");
+        double coste = Double.parseDouble(request.getParameter("pago"));
 
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        Conexion conexion = new Conexion();
+        conexion.conectar();
+
+        AnunciosSQL anuncioDAO = new AnunciosSQL(Conexion.connection);
+        anuncioDAO.aprobarAnuncio(idAnuncio, fechaInicio, fechaFinal, coste);
+        response.getWriter().write("{\"status\": \"success\", \"message\": \"Anuncio aprobado con éxito\"}");
+
+        Conexion.closeConnection();
     }
+
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
+        return "Short description";
+    }// </editor-fold>
 
 }

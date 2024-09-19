@@ -7,6 +7,8 @@ package com.mycompany.proyecto1.mvc.controller;
 import com.itextpdf.text.DocumentException;
 import com.mycompany.proyecto1.backend.ComentarioRevista;
 import com.mycompany.proyecto1.backend.GenerarReporteEditor;
+import com.mycompany.proyecto1.backend.RevistaReacciones;
+import com.mycompany.proyecto1.backend.SuscriptorRevista;
 import com.mycompany.proyecto1.backend.sql.Conexion;
 import com.mycompany.proyecto1.backend.sql.ReporteRevistaSQL;
 import jakarta.servlet.ServletException;
@@ -37,21 +39,31 @@ public class GenerarReporte extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String nombreUsuario = request.getParameter("username");
+        String reporte = request.getParameter("reporte");
+
         Conexion conexion = new Conexion();
         conexion.conectar();
-        System.out.println(nombreUsuario);
         ReporteRevistaSQL obtenerRevistas = new ReporteRevistaSQL(conexion);
-        List<ComentarioRevista> comentariosRevistas = obtenerRevistas.obtenerRevistasPorUsuario(nombreUsuario);
-        
-        response.setContentType("application/pdf");
-
-        response.setHeader("Content-Disposition", "inline; filename=reporte.pdf");
 
         try {
             GenerarReporteEditor generarReporte = new GenerarReporteEditor();
-            generarReporte.crearPDF(response.getOutputStream(), comentariosRevistas);
+            if ("comentarios".equals(reporte)) {
+                List<ComentarioRevista> comentariosRevistas = obtenerRevistas.obtenerRevistasPorUsuario(nombreUsuario);
+                generarReporte.crearPDF(response.getOutputStream(), comentariosRevistas);
+            } else if ("suscripciones".equals(reporte)) {
+                List<SuscriptorRevista> suscripcionesRevistas = obtenerRevistas.obtenerSuscripcionesPorUsuario(nombreUsuario);
+                generarReporte.crearPDFSuscripcion(response.getOutputStream(), suscripcionesRevistas);
+            } else if ("likes".equals(reporte)) {
+                List<RevistaReacciones> RevistaReacciones = obtenerRevistas.obtenerTop5RevistasPorReacciones();
+                generarReporte.crearPDFTopRevistas(response.getOutputStream(), RevistaReacciones);
+            }
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "inline; filename=reporte.pdf");
         } catch (DocumentException e) {
             throw new ServletException("Error al generar el PDF", e);
+        } finally {
+            Conexion.closeConnection();
+
         }
     }
 
@@ -66,7 +78,7 @@ public class GenerarReporte extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
     }
 
 }

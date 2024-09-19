@@ -47,30 +47,15 @@
             <div class="row">
                 <div class="col-md-4 reportes-sidebar">
                     <h5>Reportes Disponibles</h5>
-                    <form id="reporteForm" onsubmit="cargarPDF(event)" method="GET" action="/proyecto1/GenerarReporte">
-                        <p>Username: ${param.username}</p>
-                        <input type="text" id="username" name="username" value="${param.username}" readonly>
+                    <form id="reporteForm" method="GET" action="/proyecto1/GenerarReporte">
+                        <input type="hidden" name="username" value="${param.username}">
                         <div class="form-group">
-                            <select class="form-control" name="tipoReporte" id="reporte">
-                                <option value="comentariosIntervalo">Comentarios de Revista</option>
+                            <label for="reporte">Tipo de Reporte</label>
+                            <select class="form-control" name="reporte" id="reporte">
+                                <option value="comentarios">Comentarios de Revista</option>
+                                <option value="suscripciones">Suscripciones a revistas</option>
+                                <option value="likes">5 revistas con más likes</option>
                             </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="fechaInicio">Fecha de Inicio</label>
-                            <div class="input-group">
-                                <input type="date" class="form-control" id="fechaInicio" name="fechaInicio">
-                            </div>
-                        </div>
-                        <small>Fechas vacías muestran todos los datos</small>
-                        <div class="form-group">
-                            <label for="fechaFinal">Fecha de Final</label>
-                            <div class="input-group">
-                                <input type="date" class="form-control" id="fechaFinal" name="fechaFinal">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="revistasCreadas">Revistas Creadas</label>
-                            <input type="text" class="form-control" id="revistasCreadas" name="revistasCreadas" placeholder="Todas">
                         </div>
                         <button type="submit" class="btn btn-primary">Generar Reporte</button>
                     </form>
@@ -83,4 +68,43 @@
             </div>
         </div>        
     </body>
+    <script>
+        $(document).ready(function () {
+            $('#reporteForm').on('submit', function (e) {
+                e.preventDefault();
+
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'GET',
+                    data: formData,
+                    xhrFields: {
+                        responseType: 'blob' // Asegúrate de que la respuesta sea tratada como un blob
+                    },
+                    success: function (response) {
+                        var blob = new Blob([response], {type: 'application/pdf'});
+                        var url = window.URL.createObjectURL(blob);
+
+                        // Abre el PDF en un nuevo iframe
+                        var iframe = $('<iframe>', {
+                            src: url,
+                            style: 'width:100%; height:500px; border:none;',
+                        });
+
+                        // Limpia cualquier contenido anterior y añade el nuevo iframe
+                        $('#pdfFrame').empty().append(iframe);
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Ocurrió un error al generar el reporte.',
+                            icon: 'error',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 </html>
