@@ -42,7 +42,7 @@
                             <img src="${param.photoUrl}" alt="Foto de perfil" class="img-profile rounded-circle"> 
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn btn-primary" href="/proyecto1/">Cerrar sesión</a>
+                            <a class="nav-link btn btn-primary" href="/proyecto1/LogOut">Cerrar sesión</a>
                         </li>
 
                     </ul>

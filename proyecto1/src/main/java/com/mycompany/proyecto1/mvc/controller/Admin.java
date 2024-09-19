@@ -4,25 +4,26 @@
  */
 package com.mycompany.proyecto1.mvc.controller;
 
-import com.itextpdf.text.DocumentException;
-import com.mycompany.proyecto1.backend.ComentarioRevista;
-import com.mycompany.proyecto1.backend.GenerarReporteEditor;
+import com.mycompany.proyecto1.backend.Revista;
 import com.mycompany.proyecto1.backend.sql.Conexion;
-import com.mycompany.proyecto1.backend.sql.ReporteRevistaSQL;
+import com.mycompany.proyecto1.backend.sql.ObtenerRevistas;
+import com.mycompany.proyecto1.backend.sql.RevistasAdmin;
+import java.io.IOException;
+import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
  *
  * @author alesso
  */
-@WebServlet(name = "GenerarReporte", urlPatterns = {"/GenerarReporte"})
-public class GenerarReporte extends HttpServlet {
+@WebServlet(name = "Admin", urlPatterns = {"/Admin"})
+public class Admin extends HttpServlet {
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -36,22 +37,22 @@ public class GenerarReporte extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String nombreUsuario = request.getParameter("username");
         Conexion conexion = new Conexion();
         conexion.conectar();
-        System.out.println(nombreUsuario);
-        ReporteRevistaSQL obtenerRevistas = new ReporteRevistaSQL(conexion);
-        List<ComentarioRevista> comentariosRevistas = obtenerRevistas.obtenerRevistasPorUsuario(nombreUsuario);
-        
-        response.setContentType("application/pdf");
-
-        response.setHeader("Content-Disposition", "inline; filename=reporte.pdf");
 
         try {
-            GenerarReporteEditor generarReporte = new GenerarReporteEditor();
-            generarReporte.crearPDF(response.getOutputStream(), comentariosRevistas);
-        } catch (DocumentException e) {
-            throw new ServletException("Error al generar el PDF", e);
+            RevistasAdmin obtener = new RevistasAdmin(Conexion.connection);
+            List<Revista> revistas = obtener.obtenerRevistasSinAprobar();
+            request.setAttribute("revistas", revistas);
+            // Redirigir a la JSP con las revistas sin procesar
+            List<Revista> revistasDenegadas = obtener.obtenerRevistasDenegadas();
+            request.setAttribute("revistasDenegadas", revistasDenegadas);
+
+            request.getRequestDispatcher("jsp/inicioAdmin.jsp").forward(request, response);
+        } catch (SQLException e) {
+            throw new ServletException("Error al obtener revistas sin aprobar", e);
+        } finally {
+            Conexion.closeConnection();
         }
     }
 
@@ -66,7 +67,7 @@ public class GenerarReporte extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
     }
 
 }

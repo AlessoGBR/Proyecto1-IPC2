@@ -20,7 +20,7 @@ public class Conexion {
     public static Connection connection;
 
     public Conexion() {
-        
+
     }
 
     public void conectar() {
@@ -37,12 +37,11 @@ public class Conexion {
             System.out.println("Error al conectar a la DB: " + e.getMessage());
         }
     }
-    
+
     public static void closeConnection() {
         try {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
-                System.out.println("Conexión cerrada correctamente.");
             }
         } catch (SQLException e) {
             System.out.println("Error al cerrar la conexión: " + e.getMessage());

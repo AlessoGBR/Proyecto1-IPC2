@@ -4,25 +4,21 @@
  */
 package com.mycompany.proyecto1.mvc.controller;
 
-import com.itextpdf.text.DocumentException;
-import com.mycompany.proyecto1.backend.ComentarioRevista;
-import com.mycompany.proyecto1.backend.GenerarReporteEditor;
-import com.mycompany.proyecto1.backend.sql.Conexion;
-import com.mycompany.proyecto1.backend.sql.ReporteRevistaSQL;
+import java.io.IOException;
+import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.List;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
  * @author alesso
  */
-@WebServlet(name = "GenerarReporte", urlPatterns = {"/GenerarReporte"})
-public class GenerarReporte extends HttpServlet {
+@WebServlet(name = "LogOut", urlPatterns = {"/LogOut"})
+public class LogOut extends HttpServlet {
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -36,23 +32,14 @@ public class GenerarReporte extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String nombreUsuario = request.getParameter("username");
-        Conexion conexion = new Conexion();
-        conexion.conectar();
-        System.out.println(nombreUsuario);
-        ReporteRevistaSQL obtenerRevistas = new ReporteRevistaSQL(conexion);
-        List<ComentarioRevista> comentariosRevistas = obtenerRevistas.obtenerRevistasPorUsuario(nombreUsuario);
-        
-        response.setContentType("application/pdf");
+        // Obtener la sesión actual
+        HttpSession session = request.getSession(false); // No crear una nueva sesión si no existe
 
-        response.setHeader("Content-Disposition", "inline; filename=reporte.pdf");
-
-        try {
-            GenerarReporteEditor generarReporte = new GenerarReporteEditor();
-            generarReporte.crearPDF(response.getOutputStream(), comentariosRevistas);
-        } catch (DocumentException e) {
-            throw new ServletException("Error al generar el PDF", e);
+        if (session != null) {
+            session.invalidate();
         }
+
+        response.sendRedirect("/proyecto1/");
     }
 
     /**
@@ -66,7 +53,7 @@ public class GenerarReporte extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
     }
 
 }

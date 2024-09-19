@@ -4,7 +4,6 @@
  */
 package com.mycompany.proyecto1.mvc.controller;
 
-import com.mycompany.proyecto1.backend.ConsultaEtiquetasService;
 import com.mycompany.proyecto1.backend.Exceptions.UserDataInvalid;
 import com.mycompany.proyecto1.backend.InicioSesionService;
 import com.mycompany.proyecto1.backend.VerificarUsuarioService;
@@ -18,7 +17,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 
 /**
  *
@@ -87,16 +85,19 @@ public class InicioSesion extends HttpServlet {
     private void manejarRedireccionSegunTipoUsuario(HttpServletRequest request, HttpServletResponse response, Integer tipoUsuario, Connection connection) throws ServletException, IOException, UserDataInvalid {
         switch (tipoUsuario) {
             case 1: // ADMINISTRADOR
-                request.getRequestDispatcher("jsp/inicioAdmin.jsp").forward(request, response);
+                response.sendRedirect(request.getContextPath() + "/Admin");
                 break;
-            case 2: // LECTOR
-                request.getRequestDispatcher("jsp/inicio.jsp").forward(request, response);
+            case 2: // LECTOR                
+                request.getRequestDispatcher("/Lector").forward(request, response);
                 break;
             case 3: // EDITOR                
                 response.sendRedirect(request.getContextPath() + "/RevistasCreadas?username=" + URLEncoder.encode(username, "UTF-8"));
                 break;
+            case 4: // ANUNCIANTE
+                request.getRequestDispatcher("/Anunciante").forward(request, response);
+                break;
             default:
-                request.getRequestDispatcher("jsp/inicio.jsp").forward(request, response);
+
                 break;
         }
     }

@@ -13,6 +13,7 @@ import java.util.List;
 public class Revista {
 
     private int idRevista;
+    private int likes;
     private String titulo;
     private String version;
     private String fecha;
@@ -24,6 +25,7 @@ public class Revista {
     private boolean comentarios;
     private boolean meGusta;
     private boolean subscriptores;
+    private boolean denegada;
     private List<String> etiquetas;
 
     public Revista(String titulo, String version, String fecha, String pathArchivo, String descripcion, boolean esGratuita, double precio,
@@ -51,6 +53,14 @@ public class Revista {
 
     public void setIdRevista(int idRevista) {
         this.idRevista = idRevista;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 
     public String getTitulo() {
@@ -141,6 +151,14 @@ public class Revista {
         this.subscriptores = subscriptores;
     }
 
+    public boolean isDenegada() {
+        return denegada;
+    }
+
+    public void setDenegada(boolean denegada) {
+        this.denegada = denegada;
+    }    
+    
     public List<String> getEtiquetas() {
         return etiquetas;
     }

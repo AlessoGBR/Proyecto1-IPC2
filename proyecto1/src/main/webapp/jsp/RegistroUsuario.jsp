@@ -72,6 +72,7 @@
                                 <option>LECTOR</option>
                                 <option>ADMINISTRADOR</option>
                                 <option>EDITOR</option>
+                                <option>ANUNCIANTE</option>
                             </select>
                         </div>
 

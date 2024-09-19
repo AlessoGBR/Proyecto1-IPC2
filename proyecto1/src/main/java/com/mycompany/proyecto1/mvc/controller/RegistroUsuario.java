@@ -112,13 +112,16 @@ public class RegistroUsuario extends HttpServlet {
 
         switch (userType) {
             case ADMINISTRADOR:
-                paginaDestino = "jsp/inicioAdmin.jsp";
+                paginaDestino = "jsp/InicioDeSesion.jsp";
                 break;
             case LECTOR:
-                paginaDestino = "jsp/inicio.jsp";
+                paginaDestino = "jsp/InicioDeSesion.jsp";
                 break;
             case EDITOR:
-                paginaDestino = "jsp/inicioEditor.jsp";
+                paginaDestino = "jsp/InicioDeSesion.jsp";
+                break;
+            case ANUNCIANTE:
+                paginaDestino = "jsp/InicioDeSesion.jsp";
                 break;
             default:
                 break;

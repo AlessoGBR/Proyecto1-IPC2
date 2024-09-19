@@ -30,7 +30,7 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class RegistrarUsuarioDB {
 
-        public RegistrarUsuarioDB() {
+    public RegistrarUsuarioDB() {
 
     }
 
@@ -64,6 +64,9 @@ public class RegistrarUsuarioDB {
             boolean existe = usuarioExiste(connection, usuario.getUsername());
             if (!existe) {
                 insertarUsuario(connection, usuario);
+                if (usuario.getUserType() == TipoUsuarioEnum.ANUNCIANTE) {
+                    ingresoAnunciante(connection, usuario.getUsername());
+                }
             }
 
             String sqlPerfil = "INSERT INTO Perfil (fotoPerfil, descripcion, nombre_usuario) VALUES (?, ?, ?)";
@@ -74,8 +77,8 @@ public class RegistrarUsuarioDB {
 
             psPerfil.executeUpdate();
 
-            ingresarEtiquetas(connection, obtenerIdPerfil(connection,usuario.getUsername()), usuario.getUsername(), usuario.getTags());
-            
+            ingresarEtiquetas(connection, obtenerIdPerfil(connection, usuario.getUsername()), usuario.getUsername(), usuario.getTags());
+
             connection.commit();
             return true;
 
@@ -108,6 +111,8 @@ public class RegistrarUsuarioDB {
                 return 2;
             case EDITOR:
                 return 3;
+            case ANUNCIANTE:
+                return 4;
             default:
                 throw new SQLException("Tipo de usuario desconocido.");
         }
@@ -147,7 +152,7 @@ public class RegistrarUsuarioDB {
         }
     }
 
-    private void ingresarEtiquetas(Connection connection, int idPerfil, String nombreUsuario,  List<String> etiquetas) throws SQLException {
+    private void ingresarEtiquetas(Connection connection, int idPerfil, String nombreUsuario, List<String> etiquetas) throws SQLException {
         String sqlInsertRel = "INSERT INTO Perfil_Etiquetas (nombre_etiqueta,idPerfil,nombre_usuario ) VALUES (?, ?, ?)";
 
         try (PreparedStatement psInsertRel = connection.prepareStatement(sqlInsertRel)) {
@@ -155,11 +160,41 @@ public class RegistrarUsuarioDB {
                 psInsertRel.setString(1, etiqueta);
                 psInsertRel.setInt(2, idPerfil);
                 psInsertRel.setString(3, nombreUsuario);
-                
 
                 psInsertRel.addBatch();
             }
             psInsertRel.executeBatch();
+        }
+    }
+
+    private void ingresoAnunciante(Connection connection, String nombreUsuario) throws SQLException {
+        String sql = "INSERT INTO Anunciante (cartera, nombre_usuario) VALUES (0, ?)";
+        PreparedStatement psPerfil = null;
+
+        try {
+            // Inicializa el PreparedStatement
+            psPerfil = connection.prepareStatement(sql);
+
+            // Establece el parámetro
+            psPerfil.setString(1, nombreUsuario); // nombre_usuario
+
+            // Ejecuta la inserción
+            psPerfil.executeUpdate();
+
+        } catch (SQLException e) {
+            // Manejo de excepciones
+            e.printStackTrace();  // Puedes reemplazar esto con un logger
+            throw new SQLException("Error al insertar el anunciante", e);
+
+        } finally {
+            // Cierra el PreparedStatement
+            if (psPerfil != null) {
+                try {
+                    psPerfil.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();  // Manejo de cierre de recursos
+                }
+            }
         }
     }
 

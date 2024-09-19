@@ -12,6 +12,7 @@ public enum TipoUsuarioEnum {
 
     LECTOR,
     EDITOR,
-    ADMINISTRADOR;
+    ADMINISTRADOR,
+    ANUNCIANTE;
 
 }

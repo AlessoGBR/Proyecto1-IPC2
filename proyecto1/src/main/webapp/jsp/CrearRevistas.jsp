@@ -18,18 +18,14 @@
     </head>
     <header class="header-bar">
         <div class="container">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <a class="navbar-brand" href="#">EDITOR</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarNav">
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <a class="navbar-brand">CREAR REVISTAS</a>
+                <div class="collapse navbar-collapse">                   
                     <ul class="navbar-nav ml-auto d-flex align-items-center">
                         <li class="nav-item mr-2">
                             <form action="${pageContext.servletContext.contextPath}/RevistasCreadas" method="GET">
                                 <input type="hidden" name="username" value="${param.username}">
-                                <button class="btn btn-primary" type="submit">Ver revistas creadas</button>
+                                <button class="btn btn-primary" type="submit">Revistas Creadas</button>
                             </form>
                         </li>
                         <li class="nav-item mr-2">
@@ -39,16 +35,11 @@
                             </form>
                         </li>
                         <li class="nav-item mr-3">
-                            <img src="${param.photoUrl}" alt="Foto de perfil" class="img-profile rounded-circle" width="40" height="40">
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-primary" href="${pageContext.servletContext.contextPath}/LogoutServlet">Cerrar sesión</a>
+                            <img src="${param.photoUrl}" alt="Foto de perfil" class="img-profile rounded-circle"> 
                         </li>
                     </ul>
                 </div>
-
             </nav>
-
         </div>
     </header>
     <body>

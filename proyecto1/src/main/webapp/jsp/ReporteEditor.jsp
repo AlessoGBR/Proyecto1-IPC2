@@ -14,17 +14,18 @@
         <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <link rel="stylesheet" href="css/Reportes.css">
+        <script src="js/Reporte.js"></script>
     </head>
     <header class="header-bar">
         <div class="container">
             <nav class="navbar navbar-expand-lg navbar-light">
-                <a class="navbar-brand">REPORTES</a>
-                <div class="collapse navbar-collapse" id="navbarNav">
+                <a class="navbar-brand">REPORTES EDITOR</a>
+                <div class="collapse navbar-collapse">                   
                     <ul class="navbar-nav ml-auto d-flex align-items-center">
                         <li class="nav-item mr-2">
                             <form action="${pageContext.servletContext.contextPath}/RevistasCreadas" method="GET">
                                 <input type="hidden" name="username" value="${param.username}">
-                                <button class="btn btn-primary" type="submit">Ver revistas creadas</button>
+                                <button class="btn btn-primary" type="submit">Revistas Creadas</button>
                             </form>
                         </li>
                         <li class="nav-item mr-2">
@@ -34,10 +35,7 @@
                             </form>
                         </li>
                         <li class="nav-item mr-3">
-                            <img src="${param.photoUrl}" alt="Foto de perfil" class="img-profile rounded-circle" width="40" height="40">
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-primary" href="${pageContext.servletContext.contextPath}/LogoutServlet">Cerrar sesión</a>
+                            <img src="${param.photoUrl}" alt="Foto de perfil" class="img-profile rounded-circle"> 
                         </li>
                     </ul>
                 </div>
@@ -49,8 +47,9 @@
             <div class="row">
                 <div class="col-md-4 reportes-sidebar">
                     <h5>Reportes Disponibles</h5>
-                    <form action="${pageContext.servletContext.contextPath}/GenerarReporte" method="POST">
-                        <input type="hidden" name="username" value="${param.username}">
+                    <form id="reporteForm" onsubmit="cargarPDF(event)" method="GET" action="/proyecto1/GenerarReporte">
+                        <p>Username: ${param.username}</p>
+                        <input type="text" id="username" name="username" value="${param.username}" readonly>
                         <div class="form-group">
                             <select class="form-control" name="tipoReporte" id="reporte">
                                 <option value="comentariosIntervalo">Comentarios de Revista</option>
@@ -59,19 +58,19 @@
                         <div class="form-group">
                             <label for="fechaInicio">Fecha de Inicio</label>
                             <div class="input-group">
-                                <input type="date" class="form-control" id="fechaInicio" name="fechaInicio" placeholder="dd/mm/aaaa" id="fechaInicio">
-                            </div>                            
+                                <input type="date" class="form-control" id="fechaInicio" name="fechaInicio">
+                            </div>
                         </div>
                         <small>Fechas vacías muestran todos los datos</small>
                         <div class="form-group">
                             <label for="fechaFinal">Fecha de Final</label>
                             <div class="input-group">
-                                <input type="date" class="form-control" id="fechaFinal" name="fechaFinal" placeholder="dd/mm/aaaa" id="fechaFinal">
+                                <input type="date" class="form-control" id="fechaFinal" name="fechaFinal">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="revistasCreadas">Revistas Creadas</label>
-                            <input type="text" class="form-control" id="revistasCreadas" name="revistasCreadas" placeholder="Todas" id="revista">
+                            <input type="text" class="form-control" id="revistasCreadas" name="revistasCreadas" placeholder="Todas">
                         </div>
                         <button type="submit" class="btn btn-primary">Generar Reporte</button>
                     </form>
@@ -79,8 +78,9 @@
 
                 <div class="col-md-8 reporte-generado">
                     <h5 class="text-center">Reporte Generado</h5>
+                    <iframe id="pdfFrame" name="pdfFrame" width="100%" height="600px"></iframe>
                 </div>
             </div>
-        </div>
+        </div>        
     </body>
 </html>
